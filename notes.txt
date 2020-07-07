@@ -1,0 +1,12 @@
+CREATE TABLE clips (
+   id SERIAL PRIMARY KEY,
+   clip_entry VARCHAR NOT NULL,
+   created_date BIGINT,
+   user_ip VARCHAR
+)
+
+INSERT INTO clips(clip_entry, created_date, user_ip) VALUES('test contents!', 345345, '11.24.34')
+
+SELECT * FROM clips
+
+DROP TABLE IF EXISTS clips
