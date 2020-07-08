@@ -1,6 +1,10 @@
 import Head from "next/head";
 
 export default function Home() {
+  function handleLinkBtnClick() {
+    console.log("click!");
+  }
+
   return (
     <div className="container">
       <Head>
@@ -11,17 +15,17 @@ export default function Home() {
       <main>
         <h1 className="title">Universal Clipboard 📋</h1>
 
-        <p className="description">Paste here 📍 | Access anywhere 🌌</p>
+        <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
           <textarea className="text-input" spellCheck="false"></textarea>
         </div>
-        <button>Get Link</button>
+        <button>Link 🔗</button>
       </main>
 
       <style jsx>{`
         .input-container {
           width: 100%;
-          height: 25rem;
+          height: 40vh;
           margin-top: 3rem;
         }
 
@@ -54,14 +58,17 @@ export default function Home() {
           height: 3rem;
           width: 100%;
           max-width: 15rem;
-          border: none;
-          background-color: #7caaff;
+          border: 1px solid #406bbb;
+          // border: none;
+          background: #5d91f1;
+          // box-shadow: 20px 20px 60px #4776cf, -20px -20px 60px #5fa0ff;
           cursor: pointer;
           transition: all 0.15s ease-in;
           letter-spacing: 0.1em;
           margin-top: 4rem;
           outline: none;
           font-size: 1.25rem;
+          font-weight: 500;
         }
 
         main {
@@ -88,23 +95,26 @@ export default function Home() {
           font-size: 1.5rem;
         }
 
-        @media (max-width: 415px) {
+        @media (max-width: 450px) {
           .title {
             font-size: 3rem;
+          }
+
+          .description {
+            font-size: 1.25rem;
           }
           .container {
             padding: 2rem 2rem;
           }
+
+          .text-input {
+            font-size: 1.25rem;
+            padding: 2rem;
+          }
         }
         @media (max-height: 740px) {
           .input-container {
-            margin-top: 0rem;
-          }
-        }
-
-        @media (max-height: 670px) {
-          .input-container {
-            height: 20rem;
+            margin-top: 1rem;
           }
         }
       `}</style>
