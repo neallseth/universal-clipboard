@@ -1,8 +1,27 @@
 import Head from "next/head";
+import axios from "axios";
+import { useState } from "react";
+import Link from "next/link";
 
 export default function Home() {
-  function handleLinkBtnClick() {
-    console.log("click!");
+  const [userEntry, setUserEntry] = useState("");
+  const [savedClipID, setSavedClipID] = useState(null);
+
+  function userEntryIsValid() {
+    return userEntry.trim() !== "" && userEntry.length < 5000;
+  }
+
+  async function handleCreateLink() {
+    if (userEntryIsValid()) {
+      const res = await axios.post("/api/clip", {
+        clip_entry: userEntry,
+      });
+      console.log("res: ", res.data[0]);
+      setSavedClipID(res.data[0].id);
+    } else {
+      console.log("nothing provided!");
+      setUserEntry("");
+    }
   }
 
   return (
@@ -13,13 +32,30 @@ export default function Home() {
       </Head>
 
       <main>
-        <h1 className="title">Universal Clipboard 📋</h1>
+        <h1 className="title">Universal Clipboard</h1>
 
         <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
-          <textarea className="text-input" spellCheck="false"></textarea>
+          <textarea
+            className="text-input"
+            spellCheck="false"
+            onChange={(e) => {
+              if (!savedClipID) {
+                setUserEntry(e.target.value);
+              }
+            }}
+            value={userEntry}
+          ></textarea>
         </div>
-        <button>Link 🔗</button>
+        {savedClipID ? (
+          <Link href="/[id]" as={`/${savedClipID}`}>
+            <button className="linkToClip">{`${window.location.host}/${savedClipID}`}</button>
+          </Link>
+        ) : (
+          <button className="genLinkBtn" onClick={handleCreateLink}>
+            Link 🔗
+          </button>
+        )}
       </main>
 
       <style jsx>{`
@@ -45,6 +81,7 @@ export default function Home() {
           resize: none;
           -webkit-appearance: none;
         }
+
         .container {
           min-height: 100vh;
           padding: 5rem 2rem;
@@ -59,16 +96,24 @@ export default function Home() {
           width: 100%;
           max-width: 15rem;
           border: 1px solid #406bbb;
-          // border: none;
           background: #5d91f1;
-          // box-shadow: 20px 20px 60px #4776cf, -20px -20px 60px #5fa0ff;
           cursor: pointer;
           transition: all 0.15s ease-in;
           letter-spacing: 0.1em;
           margin-top: 4rem;
           outline: none;
           font-size: 1.25rem;
+        }
+
+        .genLinkBtn {
           font-weight: 500;
+          box-shadow: ${userEntryIsValid() ? "2px 2px 5px #004eff8f" : "none"};
+          color: ${userEntryIsValid() ? "black" : "#292929"};
+          cursor: ${userEntryIsValid() ? "pointer" : "default"};
+        }
+
+        .linkToClip {
+          box-shadow: 2px 2px 10px #004eff52;
         }
 
         main {

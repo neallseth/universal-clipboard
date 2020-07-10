@@ -19,7 +19,7 @@ export default async (req, res) => {
 
   let response = {};
 
-  if (req.method === "POST") {
+  if (req.method === "POST" && req.body.clip_entry) {
     console.log("post received with the body: ", req.body);
     response = await createRecord(client, req.body.clip_entry, clientIp);
   } else if (req.query.id) {
@@ -53,12 +53,12 @@ async function getEntryByID(client, id) {
 
 async function createRecord(client, entry, ip) {
   const sql =
-    "INSERT INTO clips(clip_entry, created_date, user_ip) VALUES($1, $2, $3)";
+    "INSERT INTO clips(clip_entry, created_date, user_ip) VALUES($1, $2, $3) RETURNING *";
   const params = [entry, 123, ip];
 
   try {
     const res = await client.query(sql, params);
-    return { result: "success!" };
+    return res.rows;
   } catch (err) {
     return err.stack;
   }
