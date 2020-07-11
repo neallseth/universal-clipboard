@@ -71,6 +71,7 @@ export default function Home() {
           border-radius: 50px;
           background: #538bf3;
           box-shadow: 20px 20px 60px #4776cf, -20px -20px 60px #5fa0ff;
+
           font-size: 2rem;
           padding: 2.75rem;
           line-height: 1.25;
@@ -95,7 +96,7 @@ export default function Home() {
           height: 3rem;
           width: 100%;
           max-width: 15rem;
-          border: 1px solid #406bbb;
+          border: none;
           background: #5d91f1;
           cursor: pointer;
           transition: all 0.15s ease-in;
@@ -107,13 +108,18 @@ export default function Home() {
 
         .genLinkBtn {
           font-weight: 500;
-          box-shadow: ${userEntryIsValid() ? "2px 2px 5px #004eff8f" : "none"};
-          color: ${userEntryIsValid() ? "black" : "#292929"};
+          max-width: ${userEntryIsValid() ? "15rem" : "10rem"};
+          box-shadow: ${userEntryIsValid() ? "2px 2px 35px #0039bc59" : "none"};
+          color: ${userEntryIsValid() ? "black" : "#4a4a4a"};
           cursor: ${userEntryIsValid() ? "pointer" : "default"};
+          background: ${userEntryIsValid()
+            ? "linear-gradient(to right, #658fec, #598aff)"
+            : "#5d91f1"};
         }
 
         .linkToClip {
           box-shadow: 2px 2px 10px #004eff52;
+          background-color: #88b2ff;
         }
 
         main {
@@ -128,6 +134,9 @@ export default function Home() {
           margin: 0;
           line-height: 1.15;
           font-size: 4rem;
+          background: linear-gradient(to right, #002373, #1f51c7);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
 
         .title,
