@@ -1,7 +1,7 @@
 CREATE TABLE clips (
    id SERIAL PRIMARY KEY,
    clip_entry VARCHAR NOT NULL,
-   created_date BIGINT,
+   created_date VARCHAR,
    user_ip VARCHAR
 )
 

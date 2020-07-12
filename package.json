@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.19.2",
+    "framer-motion": "^1.11.1",
     "next": "9.4.4",
     "pg": "^8.2.1",
     "react": "16.13.1",

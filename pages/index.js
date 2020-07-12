@@ -1,14 +1,20 @@
 import Head from "next/head";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import Router from "next/router";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function Home() {
   const [userEntry, setUserEntry] = useState("");
-  const [savedClipID, setSavedClipID] = useState(null);
+  const [userClipIDEntry, setUserClipIDEntry] = useState("");
 
   function userEntryIsValid() {
     return userEntry.trim() !== "" && userEntry.length < 5000;
+  }
+
+  function userIDEntryIsValid() {
+    return userClipIDEntry && typeof userClipIDEntry == "number";
   }
 
   async function handleCreateLink() {
@@ -16,11 +22,29 @@ export default function Home() {
       const res = await axios.post("/api/clip", {
         clip_entry: userEntry,
       });
-      console.log("res: ", res.data[0]);
-      setSavedClipID(res.data[0].id);
+      console.log("res: ", res.data);
+      const newClipID = res.data[0]?.id;
+      if (newClipID) {
+        Router.push("/[id]", `/${newClipID}`);
+      }
     } else {
-      console.log("nothing provided!");
       setUserEntry("");
+    }
+  }
+
+  function handleFindClip() {
+    if (userIDEntryIsValid()) {
+      Router.push("/[id]", `/${userClipIDEntry}`);
+    }
+  }
+
+  function handleClipIDInput(input) {
+    console.log("input: ", input);
+    console.log("type of input: ", typeof input);
+
+    const parsedInput = parseInt(input, 10);
+    if (parsedInput || input == "") {
+      setUserClipIDEntry(parsedInput ? parsedInput : "");
     }
   }
 
@@ -33,29 +57,52 @@ export default function Home() {
 
       <main>
         <h1 className="title">Universal Clipboard</h1>
-
         <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
           <textarea
             className="text-input"
             spellCheck="false"
             onChange={(e) => {
-              if (!savedClipID) {
-                setUserEntry(e.target.value);
-              }
+              setUserEntry(e.target.value);
             }}
             value={userEntry}
           ></textarea>
         </div>
-        {savedClipID ? (
-          <Link href="/[id]" as={`/${savedClipID}`}>
-            <button className="linkToClip">{`${window.location.host}/${savedClipID}`}</button>
-          </Link>
-        ) : (
-          <button className="genLinkBtn" onClick={handleCreateLink}>
-            Link 🔗
-          </button>
-        )}
+
+        <div className="btnContainer">
+          <AnimatePresence exitBeforeEnter>
+            {userEntryIsValid() ? (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                key="genLinkBtn"
+              >
+                <button className="genLinkBtn" onClick={handleCreateLink}>
+                  Link 🔗
+                </button>
+              </motion.span>
+            ) : (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                key="findClip"
+              >
+                <input
+                  type="text"
+                  className="findClipInput"
+                  placeholder="ID"
+                  value={userClipIDEntry}
+                  onChange={(e) => handleClipIDInput(e.target.value)}
+                ></input>
+                <button className="findClipBtn" onClick={handleFindClip}>
+                  Find Clip
+                </button>
+              </motion.span>
+            )}
+          </AnimatePresence>
+        </div>
       </main>
 
       <style jsx>{`
@@ -69,9 +116,8 @@ export default function Home() {
           width: 100%;
           height: 100%;
           border-radius: 50px;
-          background: #538bf3;
+          background: transparent;
           box-shadow: 20px 20px 60px #4776cf, -20px -20px 60px #5fa0ff;
-
           font-size: 2rem;
           padding: 2.75rem;
           line-height: 1.25;
@@ -91,35 +137,52 @@ export default function Home() {
           justify-content: center;
         }
 
-        button {
-          border-radius: 0.4rem;
-          height: 3rem;
+        .btnContainer {
+          margin-top: 4rem;
           width: 100%;
           max-width: 15rem;
+          display: flex;
+          border-radius: 0.4rem;
+        }
+
+        .findClipInput {
+          width: 30%;
+          height: 100%;
+          font-size: 1.5rem;
+          text-align: center;
           border: none;
+          outline: none;
+          background: #538bf3;
+          border-radius: 0.4rem 0rem 0rem 0.4rem;
+          border: 2px solid #5d91f1;
+        }
+
+        .findClipBtn {
+          width: 70%;
           background: #5d91f1;
+          border-radius: 0rem 0.4rem 0.4rem 0rem;
+          cursor: ${userIDEntryIsValid() ? "pointer" : "default"};
+        }
+
+        button {
+          height: 3rem;
+          width: 100%;
+          border: none;
           cursor: pointer;
           transition: all 0.15s ease-in;
           letter-spacing: 0.1em;
-          margin-top: 4rem;
           outline: none;
           font-size: 1.25rem;
         }
 
         .genLinkBtn {
+          border-radius: 0.4rem;
           font-weight: 500;
-          max-width: ${userEntryIsValid() ? "15rem" : "10rem"};
-          box-shadow: ${userEntryIsValid() ? "2px 2px 35px #0039bc59" : "none"};
-          color: ${userEntryIsValid() ? "black" : "#4a4a4a"};
-          cursor: ${userEntryIsValid() ? "pointer" : "default"};
-          background: ${userEntryIsValid()
-            ? "linear-gradient(to right, #658fec, #598aff)"
-            : "#5d91f1"};
-        }
-
-        .linkToClip {
-          box-shadow: 2px 2px 10px #004eff52;
-          background-color: #88b2ff;
+          width: 15rem;
+          box-shadow: 2px 2px 35px #0039bc59;
+          color: black;
+          cursor: pointer;
+          background: linear-gradient(to right, #658fec, #598aff);
         }
 
         main {
@@ -134,7 +197,8 @@ export default function Home() {
           margin: 0;
           line-height: 1.15;
           font-size: 4rem;
-          background: linear-gradient(to right, #002373, #1f51c7);
+          // background: linear-gradient(to right, #002373, #1f51c7);
+          background: linear-gradient(to right, #002373, #007de4);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
         }
