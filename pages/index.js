@@ -4,10 +4,12 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Router from "next/router";
 import { motion, AnimatePresence } from "framer-motion";
+import Loading from "../components/Loading";
 
 export default function Home() {
   const [userEntry, setUserEntry] = useState("");
   const [userClipIDEntry, setUserClipIDEntry] = useState("");
+  const [userSubmission, setUserSubmission] = useState(false);
 
   function userEntryIsValid() {
     return userEntry.trim() !== "" && userEntry.length < 5000;
@@ -19,6 +21,7 @@ export default function Home() {
 
   async function handleCreateLink() {
     if (userEntryIsValid()) {
+      setUserSubmission(true);
       const res = await axios.post("/api/clip", {
         clip_entry: userEntry,
       });
@@ -39,9 +42,6 @@ export default function Home() {
   }
 
   function handleClipIDInput(input) {
-    console.log("input: ", input);
-    console.log("type of input: ", typeof input);
-
     const parsedInput = parseInt(input, 10);
     if (parsedInput || input == "") {
       setUserClipIDEntry(parsedInput ? parsedInput : "");
@@ -59,14 +59,18 @@ export default function Home() {
         <h1 className="title">Universal Clipboard</h1>
         <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
-          <textarea
-            className="text-input"
-            spellCheck="false"
-            onChange={(e) => {
-              setUserEntry(e.target.value);
-            }}
-            value={userEntry}
-          ></textarea>
+          {userSubmission ? (
+            <Loading />
+          ) : (
+            <textarea
+              className="text-input"
+              spellCheck="false"
+              onChange={(e) => {
+                setUserEntry(e.target.value);
+              }}
+              value={userEntry}
+            ></textarea>
+          )}{" "}
         </div>
 
         <div className="btnContainer">
@@ -110,6 +114,9 @@ export default function Home() {
           width: 100%;
           height: 40vh;
           margin-top: 3rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .text-input {

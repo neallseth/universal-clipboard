@@ -1,11 +1,12 @@
 const { Client } = require("pg");
 const requestIp = require("request-ip");
+require("dotenv").config();
 
 const clientConfig = {
-  user: "jezchcpq",
-  host: "drona.db.elephantsql.com",
-  database: "jezchcpq",
-  password: "Itq0PC8O3DZVIC6dxdEcZDai8dkC5LkT",
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  password: process.env.DB_PASS,
   port: 5432,
 };
 

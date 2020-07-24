@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
+import Loading from "../../components/Loading";
 
 export default function ClipView() {
   const router = useRouter();
@@ -13,7 +14,6 @@ export default function ClipView() {
   async function getClipData() {
     try {
       const res = await axios.get(`/api/clip?id=${id}`);
-      console.log("setting to clipData", res.data);
       setClipData(res.data);
     } catch (err) {
       console.log("err: ", JSON.stringify(err));
@@ -37,12 +37,16 @@ export default function ClipView() {
 
         <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
-          <textarea
-            disabled
-            className="text-input"
-            spellCheck="false"
-            value={clipData ? clipData.clip_entry : "loading..."}
-          ></textarea>
+          {clipData ? (
+            <textarea
+              disabled
+              className="text-input"
+              spellCheck="false"
+              value={clipData.clip_entry}
+            ></textarea>
+          ) : (
+            <Loading />
+          )}
         </div>
         <Link href="/" as="/">
           <button className="newClipBtn" onClick={() => {}}>
@@ -56,6 +60,9 @@ export default function ClipView() {
           width: 100%;
           height: 40vh;
           margin-top: 3rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 
         .text-input {
@@ -69,10 +76,13 @@ export default function ClipView() {
           line-height: 1.25;
           color: black;
           border: none;
-          // transition: all 3s ease-in;
           outline: none;
           resize: none;
           -webkit-appearance: none;
+        }
+
+        .text-input:disabled {
+          opacity: 1;
         }
 
         .container {
