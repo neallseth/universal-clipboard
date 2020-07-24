@@ -70,7 +70,7 @@ export default function Home() {
               }}
               value={userEntry}
             ></textarea>
-          )}{" "}
+          )}
         </div>
 
         <div className="btnContainer">
