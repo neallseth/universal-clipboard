@@ -217,6 +217,14 @@ export default function ClipView() {
             margin-top: 1rem;
           }
         }
+
+        @media (max-width: 750px) {
+          .action-container {
+            flex-direction: column;
+            height: 12rem;
+            margin-top: 2rem;
+          }
+        }
       `}</style>
     </div>
   );
