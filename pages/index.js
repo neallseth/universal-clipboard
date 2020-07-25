@@ -59,18 +59,27 @@ export default function Home() {
         <h1 className="title">Universal Clipboard</h1>
         <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
-          {userSubmission ? (
-            <Loading />
-          ) : (
-            <textarea
-              className="text-input"
-              spellCheck="false"
-              onChange={(e) => {
-                setUserEntry(e.target.value);
-              }}
-              value={userEntry}
-            ></textarea>
-          )}
+          <AnimatePresence>
+            {userSubmission ? (
+              <Loading />
+            ) : (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <textarea
+                  className="text-input"
+                  spellCheck="false"
+                  onChange={(e) => {
+                    setUserEntry(e.target.value);
+                  }}
+                  value={userEntry}
+                ></textarea>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         <div className="btnContainer">

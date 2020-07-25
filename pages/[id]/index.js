@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Link from "next/link";
 import Loading from "../../components/Loading";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function ClipView() {
   const router = useRouter();
@@ -17,7 +18,7 @@ export default function ClipView() {
       setClipData(res.data);
     } catch (err) {
       console.log("err: ", JSON.stringify(err));
-      setClipData({ id: "error", clip_entry: "Error - clip does not exist" });
+      setClipData({ id: null, clip_entry: "Error - clip does not exist" });
     }
   }
 
@@ -34,25 +35,52 @@ export default function ClipView() {
 
       <main>
         <h1 className="title">Universal Clipboard</h1>
-
         <p className="description">Paste here 📍 Access anywhere 🌌</p>
         <div className="input-container">
-          {clipData ? (
-            <textarea
-              disabled
-              className="text-input"
-              spellCheck="false"
-              value={clipData.clip_entry}
-            ></textarea>
-          ) : (
-            <Loading />
-          )}
+          <AnimatePresence>
+            {clipData ? (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0 }}
+                style={{ width: "100%", height: "100%" }}
+              >
+                <textarea
+                  disabled
+                  className="text-input"
+                  spellCheck="false"
+                  value={clipData.clip_entry}
+                ></textarea>
+              </motion.div>
+            ) : (
+              <Loading />
+            )}
+          </AnimatePresence>
         </div>
-        <Link href="/" as="/">
-          <button className="newClipBtn" onClick={() => {}}>
-            Create New 📝
-          </button>
-        </Link>
+        <AnimatePresence>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            exit={{ scale: 0 }}
+            style={{ width: "100%" }}
+          >
+            <div className="action-container">
+              {clipData?.id ? (
+                <div className="idDisplay">
+                  <p>
+                    Clip ID: <span>{id}</span>
+                  </p>
+                </div>
+              ) : null}
+
+              <Link href="/" as="/">
+                <button className="newClipBtn" onClick={() => {}}>
+                  Create New 📝
+                </button>
+              </Link>
+            </div>
+          </motion.div>
+        </AnimatePresence>
       </main>
 
       <style jsx>{`
@@ -63,6 +91,34 @@ export default function ClipView() {
           display: flex;
           justify-content: center;
           align-items: center;
+        }
+
+        .action-container {
+          margin-top: 4rem;
+          width: 100%;
+          display: flex;
+          justify-content: space-evenly;
+          align-items: center;
+        }
+
+        .idDisplay {
+          font-size: 1.25rem;
+          background-color: #88b2ff40;
+          border-radius: 0.5rem;
+          height: 3rem;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 15rem;
+        }
+
+        .idDisplay p {
+          margin: 0;
+        }
+
+        .idDisplay span {
+          font-weight: bold;
+          padding-left: 0.75rem;
         }
 
         .text-input {
@@ -97,19 +153,18 @@ export default function ClipView() {
           border-radius: 0.4rem;
           height: 3rem;
           width: 100%;
-          max-width: 15rem;
+          width: 15rem;
           border: none;
           background: #5d91f1;
           cursor: pointer;
           transition: all 0.15s ease-in;
           letter-spacing: 0.1em;
-          margin-top: 4rem;
           outline: none;
           font-size: 1.25rem;
         }
 
         .newClipBtn {
-          box-shadow: 2px 2px 10px #004eff52;
+          box-shadow: 4px 4px 10px #004eff52;
           background-color: #88b2ff;
         }
 
@@ -125,7 +180,6 @@ export default function ClipView() {
           margin: 0;
           line-height: 1.15;
           font-size: 4rem;
-          // background: linear-gradient(to right, #002373, #1f51c7);
           background: linear-gradient(to right, #002373, #007de4);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
