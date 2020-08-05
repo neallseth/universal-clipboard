@@ -162,6 +162,7 @@ export default function Home() {
         }
 
         .findClipInput {
+          -webkit-appearance: none;
           width: 30%;
           height: 100%;
           font-size: 1.5rem;
@@ -213,7 +214,6 @@ export default function Home() {
           margin: 0;
           line-height: 1.15;
           font-size: 4rem;
-          // background: linear-gradient(to right, #002373, #1f51c7);
           background: linear-gradient(to right, #002373, #007de4);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
