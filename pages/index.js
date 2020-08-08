@@ -174,6 +174,11 @@ export default function Home() {
           border: 2px solid #5d91f1;
         }
 
+        .findClipInput::placeholder {
+          opacity: 1;
+          color: #5a5f8f;
+        }
+
         .findClipBtn {
           width: 70%;
           background: #5d91f1;

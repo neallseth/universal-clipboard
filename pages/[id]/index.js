@@ -139,6 +139,7 @@ export default function ClipView() {
 
         .text-input:disabled {
           opacity: 1;
+          color: black;
         }
 
         .container {
