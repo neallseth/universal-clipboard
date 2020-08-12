@@ -46,7 +46,7 @@ export default function ClipView() {
                 style={{ width: "100%", height: "100%" }}
               >
                 <textarea
-                  disabled
+                  readonly
                   className="text-input"
                   spellCheck="false"
                   value={clipData.clip_entry}
